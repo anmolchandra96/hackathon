@@ -1,26 +1,9 @@
-# -*- coding: utf-8 -*-
-"""
-Spyder Editor
-This is a temporary script file.
-"""
+#!/usr/bin/python2
+from nltk.stem import PorterStemmer 
+from nltk.corpus import stopwords
 
-"""from nltk.stem import WordNetLemmatizer 
-lemmatizer = WordNetLemmatizer() 
-x = lemmatizer.lemmatize('study')
-y = lemmatizer.lemmatize('studying')
-print x,y"""
-
-
-"""from nltk.stem import PorterStemmer 
-   
 ps = PorterStemmer() 
   
-# choose some words to be stemmed 
-# words = ["program", "programs", "programer", "programing", "programers"] 
-  
-for w in words: 
-    print(w, " : ", ps.stem(w))
-   """ 
 # pre processing
     
 import pandas as pd
@@ -86,12 +69,17 @@ if __name__ == '__main__':
     
     for z in keywords:
         for i in z[u'keywords']:
-            key_data = find_mongo('hackathon', 'KeywordsScore', {'keyword': i})
-            if len(key_data) == 0:    
-                write_mongo('hackathon', 'KeywordsScore', { 'keyword': i, 'rank': priorities[0][u'rank']  })
-            else:
-                rank = key_data[0][u'rank'];
-                update_mongo('hackathon', 'KeywordsScore', { 'keyword': i, 'rank': priorities[0][u'rank'] + rank}, i )
+            for w in i.split(' '):
+              if w in set(stopwords.words('english')):
+                break
+              rank_data = find_mongo('hackathon', 'KeywordsScore', {'keyword': w})
+              w = ps.stem(w)
+              w.join('')
+              if len(rank_data) == 0:    
+                write_mongo('hackathon', 'KeywordsScore', { 'keyword': w, 'rank': priorities[0][u'rank']  })
+              else:
+                rank = rank_data[0][u'rank'];
+                update_mongo('hackathon', 'KeywordsScore', { 'keyword': w, 'rank': priorities[0][u'rank'] + rank}, i )
             
         
     
