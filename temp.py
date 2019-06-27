@@ -1,3 +1,4 @@
+#!/usr/bin/python2
 # -*- coding: utf-8 -*-
 """
 Spyder Editor
@@ -47,7 +48,7 @@ def read_mongo(db, collection,  host='localhost', port=27017, username=None, pas
 
     # Connect to MongoDB
     db = _connect_mongo(host=host, port=port, username=username, password=password, db=db)
-    query = [  { "$lookup": { "from": 'priority_changes', "localField": 'msid', "foreignField": 'msid', "as": 'priorities' } }, 
+    query = [  { "$lookup": { "from": 'PriorityChanges', "localField": 'msid', "foreignField": 'msid', "as": 'priorities' } }, 
              { "$match": { "priorities": { "$ne": []},"keywords": { "$ne": [] },} },
              {"$project": { "keywords": 1, "msid": 1,'priorities.rank': 1,'priorities.position': 1} }]
     
@@ -70,7 +71,7 @@ def read_mongo(db, collection,  host='localhost', port=27017, username=None, pas
     return df
 
 if __name__ == '__main__':
-    df = read_mongo('hackathondb', 'stories')
+    df = read_mongo('hackathon', 'Stories')
     df.to_csv('1.csv', index=False)
     
 
